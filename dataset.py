@@ -17,9 +17,17 @@ class ImageDataset(Dataset):
         self.images = os.listdir(root_dir)
 
         for idx, file_name in enumerate(self.images):
-            self.image_data.append(os.path.join(self.root_dir, file_name))
+            image_path = os.path.join(self.root_dir, file_name)
+            img = Image.open(image_path)
+            width, height = img.size
+
+            # Validate that image data isn't smaller than our desired dimensions
+            if width < HIGH_RESOLUTION or height < HIGH_RESOLUTION:
+                continue
+
+            self.image_data.append(image_path)
         
-        print(self.image_data)
+        print(f"Built Image Dataset using {len(self.image_data)} images")
     
     def __len__(self):
         return len(self.image_data)
@@ -66,9 +74,9 @@ test_transform = A.Compose(
 )
 
 if __name__ == "__main__":
-    dataset = ImageDataset("data/raw_images")
+    dataset = ImageDataset("data/train")
     loader = DataLoader(dataset=dataset, batch_size=1, num_workers=8)
 
-    for low_res, high_res in loader:
-        print(low_res.shape)
-        print(high_res.shape)
+    #for low_res, high_res in loader:
+        #print(low_res.shape)
+        #print(high_res.shape)
