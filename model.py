@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from dataset import LOW_RESOLUTION, HIGH_RESOLUTION
 
 '''
 Model architecture from SRGan paper https://arxiv.org/pdf/1609.04802.pdf
@@ -144,12 +145,14 @@ class DiscriminatorNetwork(nn.Module):
 if __name__ == "__main__":
     
     # Output will be low_res * 2 * 2 by low_res * 2 * 2
-    low_res = 100
     with torch.cuda.amp.autocast():
-        x = torch.randn((5, 3, low_res, low_res))
-        gen = GeneratorNetwork()
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        print(f"The model will be running on {device} device")
+
+        x = torch.randn((5, 3, LOW_RESOLUTION, LOW_RESOLUTION), device=device)
+        gen = GeneratorNetwork().to(device)
         gen_out = gen(x)
-        disc = DiscriminatorNetwork()
+        disc = DiscriminatorNetwork().to(device)
         disc_out = disc(gen_out)
 
         print(gen_out.shape)
