@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision.models import vgg19
 from dataset import LOW_RESOLUTION, HIGH_RESOLUTION
 
 '''
@@ -140,6 +141,19 @@ class DiscriminatorNetwork(nn.Module):
 
         return self.classifier(x)
 
+class VGGLoss(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.vgg_model = vgg19(pretrained=True).features[:36].eval().to(device)
+        self.loss = nn.MSELoss()
+
+        for param in self.vgg_model.parameters():
+            param.requires_grad = False
+    
+    def forward(self, input, expected):
+        return self.loss(self.vgg_model(input), self.vgg_model(expected))
 
 
 if __name__ == "__main__":

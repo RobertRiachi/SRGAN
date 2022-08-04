@@ -77,6 +77,9 @@ if __name__ == "__main__":
     dataset = ImageDataset("data/train")
     loader = DataLoader(dataset=dataset, batch_size=1, num_workers=8)
 
-    #for low_res, high_res in loader:
-        #print(low_res.shape)
-        #print(high_res.shape)
+    print(dataset[0])
+
+    for low_res, high_res in loader:
+        print(low_res.shape)
+        print(high_res.shape)
+        break
