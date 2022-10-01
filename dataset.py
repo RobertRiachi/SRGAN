@@ -5,7 +5,7 @@ from albumentations.pytorch import ToTensorV2
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 
-HIGH_RESOLUTION = 720
+HIGH_RESOLUTION = 256
 LOW_RESOLUTION = HIGH_RESOLUTION // 4
 
 class ImageDataset(Dataset):
@@ -68,8 +68,8 @@ process_highres = A.Compose(
 
 test_transform = A.Compose(
     [
-        A.Normalize(mean=[0,0,0], std=[1,1,1]),
-        ToTensorV2()
+        A.Normalize(mean=[0, 0, 0], std=[1, 1, 1]),
+        ToTensorV2(),
     ]
 )
 
